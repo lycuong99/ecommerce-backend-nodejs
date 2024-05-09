@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
+const {database} = require('../configs');
 
-const conectionString = 'mongodb://localhost:27017/wsvecommerce';
+const connectionString = database.connectionString;
 
 class Database {
     constructor() {
@@ -15,7 +16,7 @@ class Database {
             })
         }
 
-        mongoose.connect(conectionString).then(() => {
+        mongoose.connect(connectionString).then(() => {
             console.log('MongoDB connected');
         }).catch((err) => {
             console.log(err);
