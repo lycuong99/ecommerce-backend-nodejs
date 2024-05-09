@@ -8,8 +8,9 @@ const app = express();
 app.use(morgan('dev'));
 app.use(helmet());
 app.use(conpression());
-//init db
 
+//init db
+requrie('./dbs/init.mongodb');
 //init routes
 app.get('/', (req, res) => {
     res.status(200).json({
