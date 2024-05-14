@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+import config from '../configs/index.js';
 
-const {database} = require('../configs');
-
-const connectionString = database.connectionString;
+console.log(config)
+const connectionString = config.database.connectionString;
 
 class Database {
     constructor() {
@@ -33,4 +33,4 @@ class Database {
     }
 }
 const mongoIstance = Database.getInstace();
-module.exports = mongoIstance;
+export default mongoIstance;

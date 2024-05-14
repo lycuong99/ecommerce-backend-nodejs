@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const countConnection = () => {
     return mongoose.connections.length;
@@ -20,7 +20,7 @@ const checkOverload = () => {
     }, _SECONDS)
 }
 
-module.exports = {
+export {
     countConnection,
     checkOverload
 }
