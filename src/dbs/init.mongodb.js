@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
-import config from '../configs/index.js';
+import config from '../configs/index';
 
-console.log(config)
 const connectionString = config.database.connectionString;
 
 class Database {
@@ -33,4 +32,3 @@ class Database {
     }
 }
 const mongoIstance = Database.getInstace();
-export default mongoIstance;

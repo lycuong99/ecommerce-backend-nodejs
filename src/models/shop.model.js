@@ -1,6 +1,6 @@
 //!dmbg 
 // const {Types, Schema} = require('mongoose'); // Erase if already required
-import {Types, Schema} from 'mongoose';
+import {Types, Schema, model} from 'mongoose';
 const DOCUMENT_NAME = "Shop";
 const COLLECTION_NAME = "shops";
 
@@ -46,4 +46,4 @@ var shopSchema = new Schema({
 
 //Export the model
 // module.exports = mongoose.model('User', shopSchema);
-export default mongoose.model(DOCUMENT_NAME, shopSchema);
+export default model(DOCUMENT_NAME, shopSchema);

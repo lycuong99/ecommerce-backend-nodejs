@@ -12,6 +12,5 @@ const config = {
     }
 }
 
-console.log('cct',process.env)
 
 export default config;
