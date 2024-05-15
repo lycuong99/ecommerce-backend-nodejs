@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import config from '../configs/index';
+import config from '../configs/';
 
 const connectionString = config.database.connectionString;
 
