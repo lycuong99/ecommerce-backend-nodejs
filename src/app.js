@@ -10,17 +10,17 @@ app.use(morgan('dev'));
 app.use(helmet());
 app.use(conpression());
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
 //init db
 require('./dbs/init.mongodb');
 
 const {checkOverload} = require('./helpers/check.connect');
-checkOverload();
+// checkOverload();
 //init routes
-app.get('/', (req, res) => {
-    res.status(200).json({
-        message: 'Welcome to WSV ecommerce API'
-    });
-});
+app.use('', require('./routers'))
 
 //handling error
 
