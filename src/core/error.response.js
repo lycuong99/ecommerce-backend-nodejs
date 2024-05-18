@@ -1,6 +1,5 @@
 const { model } = require('mongoose')
-const { ReasonPhrases, StatusCode } = require('../constants/httpStatusCode')
-const reasonPhrase = require('../constants/reasonPhrase')
+const { ReasonPhrase, StatusCode } = require('../constants/httpStatusCode')
 
 class ErrorResponse extends Error {
     constructor(message, status) {
@@ -11,7 +10,7 @@ class ErrorResponse extends Error {
 
 class ConflictRequestError extends ErrorResponse {
     constructor(
-        message = ReasonPhrases.CONFLICT,
+        message = ReasonPhrase.CONFLICT,
         status = StatusCode.CONFLICT
     ) {
         super(message, status)
@@ -20,7 +19,7 @@ class ConflictRequestError extends ErrorResponse {
 
 class BadRequestError extends ErrorResponse {
     constructor(
-        message = ReasonPhrases.BAD_REQUEST,
+        message = ReasonPhrase.BAD_REQUEST,
         status = StatusCode.BAD_REQUEST
     ) {
         super(message, status)
