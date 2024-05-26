@@ -18,7 +18,7 @@ class SuccessResponse {
 }
 
 class Ok extends SuccessResponse {
-    constructor(message, metadata) {
+    constructor({message, metadata}) {
         super({
             message,
             metadata,
@@ -39,5 +39,6 @@ class Created extends SuccessResponse {
 
 module.exports = {
   Ok,
-  Created
+  Created,
+  SuccessResponse
 }

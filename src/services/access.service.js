@@ -6,7 +6,8 @@ const KeyTokenService = require('./keyToken.service')
 
 const { createTokenPair } = require('../auth/authUtils')
 const { getIntoData } = require('../utils')
-const { BadRequestError } = require('../core/error.response')
+const { BadRequestError, AuthFailError } = require('../core/error.response')
+const { findByEmail } = require('./shop.service')
 
 const RoleShop = {
     SHOP: 'SHOP',
@@ -15,6 +16,47 @@ const RoleShop = {
     ADMIN: 'ADMIN',
 }
 class AccessService {
+    static login = async ({ email, password, refreshToken = null }) => {
+        const foundShop = await findByEmail(email);
+
+        if (!foundShop) {
+            throw new BadRequestError('Shop not found')
+        }
+
+        const isMatchPassword = bcrypt.compareSync(password, foundShop.password)
+        if (!isMatchPassword) {
+            throw new AuthFailError('Wrong password')
+        }
+
+        const privateKey = crypto.randomBytes(64).toString('hex')
+        const publicKey = crypto.randomBytes(64).toString('hex')
+
+        const userId = foundShop._id
+        const tokens = createTokenPair(
+            {
+                userId,
+                email: foundShop.email,
+            },
+            publicKey,
+            privateKey
+        )
+
+        //save tokens
+        await KeyTokenService.createToken({
+            userId,
+            publicKey,
+            privateKey,
+            refreshToken: tokens.refreshToken,
+        })
+
+        return {
+            shop: getIntoData({
+                fields: ['_id', 'name', 'email'],
+                object: foundShop,
+            }),
+            tokens,
+        }
+    }
     static async signUpLevel3({ name, email, password }) {
         try {
             const holderShop = await shopModel.findOne({ email }).lean()
@@ -51,7 +93,6 @@ class AccessService {
                         },
                     }
                 )
-                
 
                 console.log({ privateKey, type: typeof privateKey, publicKey })
 
@@ -106,86 +147,80 @@ class AccessService {
     }
 
     static async signUp({ name, email, password }) {
-        
-            const holderShop = await shopModel.findOne({ email }).lean()
+        const holderShop = await shopModel.findOne({ email }).lean()
 
-            if (holderShop) {
-                throw new BadRequestError('Shop already exists')
-            }
-            const COMPLEX_LEVEL = 10
-            const passwordHash = await bcrypt.hash(password, COMPLEX_LEVEL)
+        if (holderShop) {
+            throw new BadRequestError('Shop already exists')
+        }
+        const COMPLEX_LEVEL = 10
+        const passwordHash = await bcrypt.hash(password, COMPLEX_LEVEL)
 
-            const newShop = await shopModel.create({
-                name,
-                email,
-                password: passwordHash,
-                roles: [RoleShop.SHOP],
+        const newShop = await shopModel.create({
+            name,
+            email,
+            password: passwordHash,
+            roles: [RoleShop.SHOP],
+        })
+
+        if (newShop) {
+            // create privateKey, publicKey
+            //For LARGE SYSTEM
+            // const { privateKey, publicKey } = crypto.generateKeyPairSync(
+            //     'rsa',
+            //     {
+            //         modulusLength: 4096,
+            //         publicKeyEncoding: {
+            //             type: 'pkcs1',
+            //             format: 'pem',
+            //         },
+            //         privateKeyEncoding: {
+            //             type: 'pkcs1',
+            //             format: 'pem',
+            //         },
+            //     }
+            // )
+
+            const privateKey = crypto.randomBytes(64).toString('hex'),
+                publicKey = crypto.randomBytes(64).toString('hex')
+
+            console.log({ privateKey, type: typeof privateKey, publicKey })
+
+            const keyStore = await KeyTokenService.createToken({
+                userId: newShop._id,
+                publicKey,
+                privateKey,
             })
 
-            if (newShop) {
-                // create privateKey, publicKey
-                //For LARGE SYSTEM
-                // const { privateKey, publicKey } = crypto.generateKeyPairSync(
-                //     'rsa',
-                //     {
-                //         modulusLength: 4096,
-                //         publicKeyEncoding: {
-                //             type: 'pkcs1',
-                //             format: 'pem',
-                //         },
-                //         privateKeyEncoding: {
-                //             type: 'pkcs1',
-                //             format: 'pem',
-                //         },
-                //     }
-                // )
-
-                const privateKey = crypto.randomBytes(64).toString('hex'),
-                publicKey = crypto.randomBytes(64).toString('hex');
-
-
-
-                console.log({ privateKey, type: typeof privateKey, publicKey })
-
-                const keyStore = await KeyTokenService.createToken({
-                    userId: newShop._id,
-                    publicKey,
-                    privateKey
-                })
-
-                if (!keyStore) {
-                    throw new BadRequestError('Failed to create keyStore')
-                }
-
-              
-
-                const tokens = createTokenPair(
-                    {
-                        userId: newShop._id,
-                        email: email,
-                    },
-                    publicKey,
-                    privateKey
-                )
-                console.log(`Created Token success::`, tokens)
-
-                return {
-                    code: 201,
-                    metadata: {
-                        shop: getIntoData({
-                            fields: ["_id", "name", "email"],
-                            object: newShop,
-                        }),
-                        tokens,
-                    },
-                }
+            if (!keyStore) {
+                throw new BadRequestError('Failed to create keyStore')
             }
+
+            const tokens = createTokenPair(
+                {
+                    userId: newShop._id,
+                    email: email,
+                },
+                publicKey,
+                privateKey
+            )
+            console.log(`Created Token success::`, tokens)
 
             return {
-                code: 200,
-                metadata: null,
+                code: 201,
+                metadata: {
+                    shop: getIntoData({
+                        fields: ['_id', 'name', 'email'],
+                        object: newShop,
+                    }),
+                    tokens,
+                },
             }
-       
+        }
+
+        return {
+            code: 200,
+            metadata: null,
+        }
     }
 }
 
