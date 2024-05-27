@@ -18,6 +18,13 @@ class AccessController {
             metadata: await AccessService.login(req.body),
         }).send(res)
     }
+
+    async logout(req, res, next) {
+        new Ok({
+            message: 'Logged out successfully',
+            metadata: await AccessService.logout({keyStore:req.keyStore}),
+        }).send(res)
+    }
 }
 
 module.exports = new AccessController()

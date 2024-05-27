@@ -1,3 +1,4 @@
+const { Types } = require('mongoose')
 const keytokenModel = require('../models/keytoken.model')
 
 class KeyTokenService {
@@ -32,15 +33,25 @@ class KeyTokenService {
                 update = {
                     publicKey,
                     privateKey,
+                    refreshTokensUsed: [],
+                    refreshTokenCurrentUse: refreshToken,
                 },
                 option = {
                     upsert: true,
                     new: true,
                 }
-            keytokenModel.findOneAndUpdate(filter, update, option);
+            await keytokenModel.findOneAndUpdate(filter, update, option);
         } catch (error) {
             return error
         }
+    }
+
+    static findByUserId = async (userId) => {
+        return keytokenModel.findOne({user: new Types.ObjectId(userId)}).lean();
+    }
+
+    static removeKeyById = async (id) => {
+        return await keytokenModel.deleteOne({_id: new Types.ObjectId(id)})
     }
 }
 
