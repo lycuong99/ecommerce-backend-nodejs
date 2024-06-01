@@ -1,5 +1,6 @@
-@baseUrl = http://localhost:3055/api/v1
+@baseUrl = http://127.0.0.1:3055/api/v1
 @apiKey = e7a939158ea87c0b31160fd01d9057100aa6ceb86f72cf4fc20415093d939a2001384a19f23c65f62dbc99cd533f6a6b0ab3b195a6a5df14309beff2e03a3e48
+@clientId = 664895c35ff7900131e8fed3
 ### signUp
 POST {{baseUrl}}/shop/signup
 Content-Type: application/json
@@ -22,6 +23,18 @@ x-api-key: {{apiKey}}
     "password":"accc@11212"
 }
 
+
+### refreshToken
+POST {{baseUrl}}/shop/refresh-token
+x-api-key: {{apiKey}}
+x-client-id: 664895c35ff7900131e8fed3
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJpYXQiOjE3MTcyMzU4MDksImV4cCI6MTcxNzQwODYwOX0.DXDRIagGbG_0qg3mepO5avFvxrIGRS_3Krzp4bY1HoI
+Content-Type: application/json
+
+{
+    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJpYXQiOjE3MTcyMzU4MDksImV4cCI6MTcxNzg0MDYwOX0.HbrFxln_mP_s8pv6AvfzCVuzOCg3sVJJXZMWkTOxFRg"
+    
+}
 ### logout
 POST {{baseUrl}}/shop/logout
 x-api-key: {{apiKey}}

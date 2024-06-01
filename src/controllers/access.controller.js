@@ -1,7 +1,17 @@
-const { Created, Ok } = require('../core/success.response')
+const { Created, Ok, SuccessResponse } = require('../core/success.response')
 const AccessService = require('../services/access.service')
 
 class AccessController {
+    async handleRefreshToken(req, res, next) {
+        return new Ok({
+            message: 'Refresh token successfully',
+            metadata: await AccessService.handleRefreshToken({
+                refreshToken:req.refreshToken,
+                user: req.user,
+                keyStore: req.keyStore,
+            })
+        }).send(res)
+    }
     async signUp(req, res, next) {
         console.log(`[P]::signUp::`, req.body)
         // res.status(201).json(await AccessService.signUp(req.body))

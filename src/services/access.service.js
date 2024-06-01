@@ -4,9 +4,9 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 const KeyTokenService = require('./keyToken.service')
 
-const { createTokenPair } = require('../auth/authUtils')
+const { createTokenPair, verifyJWT } = require('../auth/authUtils')
 const { getIntoData } = require('../utils')
-const { BadRequestError, AuthFailError } = require('../core/error.response')
+const { BadRequestError, AuthFailError, ForbiddenError } = require('../core/error.response')
 const { findByEmail } = require('./shop.service')
 
 const RoleShop = {
@@ -16,6 +16,51 @@ const RoleShop = {
     ADMIN: 'ADMIN',
 }
 class AccessService {
+    static handleRefreshToken = async ({
+        refreshToken,
+        user,
+        keyStore
+    }) => {
+        const {userId, email} = user;
+
+        if(keyStore.refreshTokensUsed.includes(refreshToken)) {
+            await KeyTokenService.deleteKeyByUserId(userId);
+            throw new ForbiddenError('Something went wrong!! Please login again');
+        }
+        if(refreshToken != keyStore.refreshTokenCurrentUse) {
+            throw new AuthFailError('User is not registered');
+        }
+
+
+        const tokens = createTokenPair(
+            {
+                userId,
+                email,
+            },
+            keyStore.privateKey,
+            keyStore.privateKey
+        );
+
+        await keyStore.updateOne({
+            $set:{
+                refreshTokenCurrentUse: tokens.refreshToken
+            },
+            $addToSet:{
+                refreshTokensUsed: refreshToken
+            }
+        });
+
+        return {
+            user,
+            tokens
+        }
+            
+
+
+
+
+
+    }
     static logout = async ({keyStore}) => {
         const delKey = await KeyTokenService.removeKeyById(keyStore._id)
         console.log(`delKey::`, delKey);
@@ -36,7 +81,7 @@ class AccessService {
         const privateKey = crypto.randomBytes(64).toString('hex')
         const publicKey = crypto.randomBytes(64).toString('hex')
 
-        const userId = foundShop._id
+        const userId = foundShop._id;
         const tokens = createTokenPair(
             {
                 userId,
