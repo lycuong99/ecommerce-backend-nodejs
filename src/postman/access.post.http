@@ -1,6 +1,9 @@
 @baseUrl = http://127.0.0.1:3055/api/v1
 @apiKey = e7a939158ea87c0b31160fd01d9057100aa6ceb86f72cf4fc20415093d939a2001384a19f23c65f62dbc99cd533f6a6b0ab3b195a6a5df14309beff2e03a3e48
 @clientId = 664895c35ff7900131e8fed3
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjQ2NDk5LCJleHAiOjE3MTc0MTkyOTl9.w-WzXE58c31NuyF3nEOkvTI7XZx6s7ydXPw2xqhGYXM
+
+
 ### signUp
 POST {{baseUrl}}/shop/signup
 Content-Type: application/json
@@ -28,15 +31,34 @@ x-api-key: {{apiKey}}
 POST {{baseUrl}}/shop/refresh-token
 x-api-key: {{apiKey}}
 x-client-id: 664895c35ff7900131e8fed3
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJpYXQiOjE3MTcyMzU4MDksImV4cCI6MTcxNzQwODYwOX0.DXDRIagGbG_0qg3mepO5avFvxrIGRS_3Krzp4bY1HoI
-Content-Type: application/json
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjM4NDAwLCJleHAiOjE3MTc0MTEyMDB9._lcug4lZPoMyCTB6ZhKuV7fcp1CCiKpGKR08Kj2PkqE
+x-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjM4NDAwLCJleHAiOjE3MTc4NDMyMDB9.AiOZBG8aBWe7957WBn4Uy0JoWNpaNITpKAGUkFDaDu8
 
-{
-    "refreshToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJpYXQiOjE3MTcyMzU4MDksImV4cCI6MTcxNzg0MDYwOX0.HbrFxln_mP_s8pv6AvfzCVuzOCg3sVJJXZMWkTOxFRg"
-    
-}
 ### logout
 POST {{baseUrl}}/shop/logout
 x-api-key: {{apiKey}}
 x-client-id: 664895c35ff7900131e8fed3
 authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJpYXQiOjE3MTY4MjYxMTYsImV4cCI6MTcxNjk5ODkxNn0.Y_WAsokX4O_wM2-fFKtQHxdDjLuwJQrzknFRElXK550
+
+
+### createProduct
+POST {{baseUrl}}/product
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+{
+    "name": "product1",
+    "price": 1000,
+    "description": "product1",
+    "quantity": 1000,
+    "type": "clothing",
+    "thumb": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
+    "shop": "604895c35ff7900131e8fed3",
+    "attributes": {
+        "brand": "nike",
+        "size": "M",
+        "material": "cotton"
+    }
+}
