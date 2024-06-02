@@ -49,15 +49,15 @@ Authorization: {{accessToken}}
 Content-Type: application/json
 
 {
-    "name": "product1",
+    "name": "product2",
     "price": 1000,
-    "description": "product1",
+    "description": "product2",
     "quantity": 1000,
     "type": "clothing",
     "thumb": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
     "shop": "604895c35ff7900131e8fed3",
     "attributes": {
-        "brand": "nike",
+        "brand": "NIKE",
         "size": "M",
         "material": "cotton"
     }
