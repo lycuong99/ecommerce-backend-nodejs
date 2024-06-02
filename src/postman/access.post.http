@@ -49,16 +49,15 @@ Authorization: {{accessToken}}
 Content-Type: application/json
 
 {
-    "name": "product2",
+    "name": "furniture1",
     "price": 1000,
     "description": "product2",
     "quantity": 1000,
-    "type": "clothing",
+    "type": "furniture",
     "thumb": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
-    "shop": "604895c35ff7900131e8fed3",
     "attributes": {
-        "brand": "NIKE",
-        "size": "M",
-        "material": "cotton"
+        "manufacturer": "TOKODO",
+        "model": "123456789",
+        "color": "red"
     }
 }

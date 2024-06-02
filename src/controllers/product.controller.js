@@ -1,5 +1,7 @@
 const { Created, Ok, SuccessResponse } = require('../core/success.response')
-const ProductService = require('../services/product.service')
+// const ProductService = require('../services/product.service');
+const ProductService = require('../services/product.service.xxx');
+
 
 class ProductController {
     async createProduct(req, res, next) {
