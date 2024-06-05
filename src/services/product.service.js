@@ -24,8 +24,8 @@ class Product {
         price,
         quantity,
         type,
-        attributes,
-        shop,
+        product_attributes,
+        product_shop,
     }) {
         this.name = name
         this.thumb = thumb
@@ -33,8 +33,8 @@ class Product {
         this.price = price
         this.quantity = quantity
         this.type = type
-        this.attributes = attributes
-        this.shop = shop
+        this.product_attributes = product_attributes
+        this.product_shop = product_shop
     }
 
     async createProduct(_id) {
@@ -48,8 +48,8 @@ class Product {
 class Clothing extends Product {
    async createProduct() {
         const newCloth = await cloth.create({
-            ...this.attributes,
-            shop: this.shop
+            ...this.product_attributes,
+            product_shop: this.product_shop
         });
         if(!newCloth) {
             throw new BadRequestError('Failed to create cloth')
@@ -66,8 +66,8 @@ class Clothing extends Product {
 class Electronics extends Product {
     async createProduct() {
         const newElectronics = await electronics.create({
-            ...this.attributes,
-            shop: this.shop
+            ...this.product_attributes,
+            product_shop: this.product_shop
         });
         if(!newElectronics) {
             throw new BadRequestError('Failed to create electronics')

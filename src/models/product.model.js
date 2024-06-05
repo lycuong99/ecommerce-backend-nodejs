@@ -1,5 +1,6 @@
-const { size } = require('lodash')
+const { size, max } = require('lodash')
 const { Types, Schema, model } = require('mongoose')
+const { default: slugify } = require('slugify')
 
 const DOCUMENT_NAME = 'Product'
 const COLLECTION_NAME = 'products'
@@ -15,6 +16,7 @@ const productSchema = new Schema(
             type: String,
             required: true,
         },
+        product_slug: String,
         description: String,
         price: {
             type: Number,
@@ -29,20 +31,48 @@ const productSchema = new Schema(
             enum: ['clothing', 'furniture', 'electronics'],
             required: true,
         },
-        attributes: {
+        product_attributes: {
             type: Schema.Types.Mixed,
             required: true,
         },
-        shop: {
+        product_shop: {
             type: Schema.Types.ObjectId,
             ref: 'Shop',
         },
+        product_ratingAverage:{
+            type: Number,
+            default: 4.5,
+            min: [1, 'Rating must be above 1.'],
+            max: [5, 'Rating must be below 5.'],
+            set: val => Math.round(val * 10) / 10,
+        },
+        product_variations:{
+            type: Array, default: []
+        },
+        isDraft: {
+            type: Boolean,
+            default: true,
+            index: true,
+            select: false
+        },
+        isPublished: {
+            type: Boolean,
+            default: false,
+            index: true,
+            select:false,
+        }
     },
     {
         collection: COLLECTION_NAME,
         timestamps: true,
     }
 )
+
+// Document middlewares: before save create
+productSchema.pre('save', function (next) {
+    this.product_slug = slugify(this.name, { lower: true })
+    next()
+})
 
 const clothSchema = new Schema(
     {
@@ -52,7 +82,7 @@ const clothSchema = new Schema(
         },
         size: String,
         material: String,
-        shop: {
+        product_shop: {
             type: Schema.Types.ObjectId,
             ref: 'Shop',
         },
@@ -71,7 +101,7 @@ const electronicSchema = new Schema(
         },
         model: String,
         color: String,
-        shop: {
+        product_shop: {
             type: Schema.Types.ObjectId,
             ref: 'Shop',
         },
@@ -90,7 +120,7 @@ const furnitureSchema = new Schema(
         },
         model: String,
         color: String,
-        shop: {
+        product_shop: {
             type: Schema.Types.ObjectId,
             ref: 'Shop',
         },

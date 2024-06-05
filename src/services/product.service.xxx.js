@@ -1,5 +1,11 @@
 const { BadRequestError } = require('../core/error.response')
-const { product, cloth, electronics , furniture} = require('../models/product.model')
+const {
+    product,
+    cloth,
+    electronics,
+    furniture,
+} = require('../models/product.model')
+const { findAllDraftsForShop } = require('../models/repositories/product.repo')
 
 class ProductFactory {
     static productRegistry = {}
@@ -13,6 +19,15 @@ class ProductFactory {
         }
         return new productClass(payload).createProduct()
     }
+
+    static async findAllDraftsForShop({ product_shop, limit = 50, skip = 0 }) {
+        const query = {
+            product_shop,
+            isDraft: true,
+        }
+
+        return await findAllDraftsForShop({ query, limit, skip })
+    }
 }
 class Product {
     constructor({
@@ -22,8 +37,8 @@ class Product {
         price,
         quantity,
         type,
-        attributes,
-        shop,
+        product_attributes,
+        product_shop,
     }) {
         this.name = name
         this.thumb = thumb
@@ -31,8 +46,8 @@ class Product {
         this.price = price
         this.quantity = quantity
         this.type = type
-        this.attributes = attributes
-        this.shop = shop
+        this.product_attributes = product_attributes
+        this.product_shop = product_shop
     }
 
     async createProduct(_id) {
@@ -46,8 +61,8 @@ class Product {
 class Clothing extends Product {
     async createProduct() {
         const newCloth = await cloth.create({
-            ...this.attributes,
-            shop: this.shop,
+            ...this.product_attributes,
+            product_shop: this.product_shop,
         })
         if (!newCloth) {
             throw new BadRequestError('Failed to create cloth')
@@ -64,8 +79,8 @@ class Clothing extends Product {
 class Electronics extends Product {
     async createProduct() {
         const newElectronics = await electronics.create({
-            ...this.attributes,
-            shop: this.shop,
+            ...this.product_attributes,
+            product_shop: this.product_shop,
         })
         if (!newElectronics) {
             throw new BadRequestError('Failed to create electronics')
@@ -80,8 +95,8 @@ class Electronics extends Product {
 class Furniture extends Product {
     async createProduct() {
         const newFurniture = await furniture.create({
-            ...this.attributes,
-            shop: this.shop,
+            ...this.product_attributes,
+            product_shop: this.product_shop,
         })
         if (!newFurniture) {
             throw new BadRequestError('Failed to create furniture')
