@@ -37,6 +37,50 @@ class ProductController {
             }),
         }).send(res);
     }
+
+    /**
+     * Asynchronously retrieves all Publish for a shop and sends an Ok response with the metadata of the drafts.
+     *
+     * @param {Object} req - The request object containing the user ID in the request body.
+     * @param {Object} res - The response object used to send the response.
+     * @param {Function} next - The next middleware function in the chain.
+     * @return {Promise<void>} A promise that resolves when the response is sent.
+     */
+    async getAllPublishForShop(req, res, next) {
+        return new Ok({
+            message: 'Get all drafts successfully',
+            metadata: await ProductService.findAllPublishForShop({
+                product_shop: req.user.userId,
+            }),
+        }).send(res);
+    }
+
+    async publishProduct(req, res, next) {
+        return new SuccessResponse({
+            message: 'Publish successfully',
+            metadata: await ProductService.publishProductByShop({
+                product_id: req.params.id,
+                product_shop: req.user.userId,
+            }),
+        }).send(res);
+    }
+
+    async unPublishProduct(req, res, next) {
+        return new SuccessResponse({
+            message: 'UnPublish successfully',
+            metadata: await ProductService.unPublishProductByShop({
+                product_id: req.params.id,
+                product_shop: req.user.userId,
+            }),
+        }).send(res);
+    }
+
+    async getListSearchProduct(req, res, next) {
+        return new SuccessResponse({
+            message: 'Search successfully',
+            metadata: await ProductService.searchProductByUser(req.params),
+        }).send(res);
+    }
 }
 
 module.exports = new ProductController()

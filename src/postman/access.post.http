@@ -1,7 +1,7 @@
 @baseUrl = http://127.0.0.1:3055/api/v1
 @apiKey = e7a939158ea87c0b31160fd01d9057100aa6ceb86f72cf4fc20415093d939a2001384a19f23c65f62dbc99cd533f6a6b0ab3b195a6a5df14309beff2e03a3e48
 @clientId = 664895c35ff7900131e8fed3
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjQ2NDk5LCJleHAiOjE3MTc0MTkyOTl9.w-WzXE58c31NuyF3nEOkvTI7XZx6s7ydXPw2xqhGYXM
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3NjgzMjEyLCJleHAiOjE3MTc4NTYwMTJ9.Oq4Di1axjHQI6wvA9Jo6xTjyyNNL3-uuKqOXRfi_-to
 
 
 ### signUp
@@ -31,7 +31,7 @@ x-api-key: {{apiKey}}
 POST {{baseUrl}}/shop/refresh-token
 x-api-key: {{apiKey}}
 x-client-id: 664895c35ff7900131e8fed3
-authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjM4NDAwLCJleHAiOjE3MTc0MTEyMDB9._lcug4lZPoMyCTB6ZhKuV7fcp1CCiKpGKR08Kj2PkqE
+x-client-id: {{accessToken}}
 x-refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3MjM4NDAwLCJleHAiOjE3MTc4NDMyMDB9.AiOZBG8aBWe7957WBn4Uy0JoWNpaNITpKAGUkFDaDu8
 
 ### logout
@@ -49,15 +49,39 @@ Authorization: {{accessToken}}
 Content-Type: application/json
 
 {
-    "name": "furniture1",
+    "name": "Tủ quần áo",
     "price": 1000,
-    "description": "product2",
+    "description": "Tủ quần áo nhập khẩu",
     "quantity": 1000,
     "type": "furniture",
     "thumb": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
-    "attributes": {
+    "product_attributes": {
         "manufacturer": "TOKODO",
         "model": "123456789",
         "color": "red"
     }
 }
+
+### Get drafts all
+GET {{baseUrl}}/product/drafts/all
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+
+### Get Publish  all
+GET {{baseUrl}}/product/published/all
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+
+###Publish product
+PUT {{baseUrl}}/product/publish/6660790c9c807b9cf51d3e41
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+
+### SEARCH
+GET {{baseUrl}}/product/search/ao quan
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
