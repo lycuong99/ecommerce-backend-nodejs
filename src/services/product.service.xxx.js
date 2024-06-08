@@ -5,7 +5,15 @@ const {
     electronics,
     furniture,
 } = require('../models/product.model')
-const { findAllDraftsForShop, findAllPublishForShop, publishProductByShop, unPublishProductByShop, searchProductByUser } = require('../models/repositories/product.repo')
+const {
+    findAllDraftsForShop,
+    findAllPublishForShop,
+    publishProductByShop,
+    unPublishProductByShop,
+    searchProductByUser,
+    findAllProducts,
+    findProduct,
+} = require('../models/repositories/product.repo')
 
 class ProductFactory {
     static productRegistry = {}
@@ -20,11 +28,11 @@ class ProductFactory {
         return new productClass(payload).createProduct()
     }
 
-    static async publishProductByShop({product_shop, product_id}) {
-        return await publishProductByShop({product_shop, product_id});
+    static async publishProductByShop({ product_shop, product_id }) {
+        return await publishProductByShop({ product_shop, product_id })
     }
-    static async unPublishProductByShop({product_shop, product_id}) {
-        return await unPublishProductByShop({product_shop, product_id});
+    static async unPublishProductByShop({ product_shop, product_id }) {
+        return await unPublishProductByShop({ product_shop, product_id })
     }
 
     static async findAllDraftsForShop({ product_shop, limit = 50, skip = 0 }) {
@@ -46,6 +54,19 @@ class ProductFactory {
 
     static async searchProductByUser({ keySearch }) {
         return await searchProductByUser({ keySearch })
+    }
+    static async findAllProducts({
+        limit = 50,
+        sort = 'ctime',
+        page = 1,
+        filter = { isPublished: true },
+        select = ['name', 'thumb', 'price'],
+    }) {
+        return await findAllProducts({ limit, sort, page, filter, select  })
+    }
+
+    static async findProduct ({ product_id }) {
+        return findProduct({ product_id, unSelect : ['__v'] })
     }
 }
 class Product {
