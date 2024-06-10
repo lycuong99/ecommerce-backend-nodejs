@@ -1,10 +1,9 @@
 const { Created, Ok, SuccessResponse } = require('../core/success.response')
 // const ProductService = require('../services/product.service');
-const ProductService = require('../services/product.service.xxx');
-
+const ProductService = require('../services/product.service.xxx')
 
 class ProductController {
-        /**
+    /**
      * Asynchronously creates a new product and sends a Created response with the metadata of the created product.
      *
      * @param {Object} req - The request object containing the body of the request.
@@ -35,7 +34,7 @@ class ProductController {
             metadata: await ProductService.findAllDraftsForShop({
                 product_shop: req.user.userId,
             }),
-        }).send(res);
+        }).send(res)
     }
 
     /**
@@ -52,7 +51,7 @@ class ProductController {
             metadata: await ProductService.findAllPublishForShop({
                 product_shop: req.user.userId,
             }),
-        }).send(res);
+        }).send(res)
     }
 
     async publishProduct(req, res, next) {
@@ -62,7 +61,7 @@ class ProductController {
                 product_id: req.params.id,
                 product_shop: req.user.userId,
             }),
-        }).send(res);
+        }).send(res)
     }
 
     async unPublishProduct(req, res, next) {
@@ -72,27 +71,43 @@ class ProductController {
                 product_id: req.params.id,
                 product_shop: req.user.userId,
             }),
-        }).send(res);
+        }).send(res)
     }
 
     async getListSearchProduct(req, res, next) {
         return new SuccessResponse({
             message: 'Search successfully',
             metadata: await ProductService.searchProductByUser(req.params),
-        }).send(res);
+        }).send(res)
     }
 
-    async getAllProducts(req, res, next) { 
+    async getAllProducts(req, res, next) {
         return new SuccessResponse({
             message: 'getAllProducts successfully',
-            metadata: await ProductService.findAllProducts(req.query ),
+            metadata: await ProductService.findAllProducts(req.query),
         }).send(res)
     }
 
     async getProduct(req, res, next) {
         return new SuccessResponse({
             message: 'getProduct successfully',
-            metadata: await ProductService.findProduct({product_id: req.params.product_id}),
+            metadata: await ProductService.findProduct({
+                product_id: req.params.product_id,
+            }),
+        }).send(res)
+    }
+
+    async updateProduct(req, res, next) {
+        return new SuccessResponse({
+            message: 'updateProduct successfully',
+            metadata: await ProductService.updateProduct(
+                req.body.type,
+                req.params.product_id,
+                {
+                    ...req.body,
+                    product_shop: req.user.userId,
+                }
+            ),
         }).send(res)
     }
 }

@@ -1,7 +1,7 @@
 @baseUrl = http://127.0.0.1:3055/api/v1
 @apiKey = e7a939158ea87c0b31160fd01d9057100aa6ceb86f72cf4fc20415093d939a2001384a19f23c65f62dbc99cd533f6a6b0ab3b195a6a5df14309beff2e03a3e48
 @clientId = 664895c35ff7900131e8fed3
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE3NjgzMjEyLCJleHAiOjE3MTc4NTYwMTJ9.Oq4Di1axjHQI6wvA9Jo6xTjyyNNL3-uuKqOXRfi_-to
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE4MDMwOTEwLCJleHAiOjE3MTgyMDM3MTB9.PtXLHVCtfyjENZv-njesj8U9c2Cb9uqrG3m1qyBUElc
 
 
 ### signUp
@@ -49,16 +49,16 @@ Authorization: {{accessToken}}
 Content-Type: application/json
 
 {
-    "name": "Tủ quần áo",
+    "name": "quần áo",
     "price": 1000,
-    "description": "Tủ quần áo nhập khẩu",
+    "description": "quần áo nhập khẩu",
     "quantity": 1000,
-    "type": "furniture",
+    "type": "clothing",
     "thumb": "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png",
     "product_attributes": {
-        "manufacturer": "TOKODO",
-        "model": "123456789",
-        "color": "red"
+       "size": "L",
+       "brand": "adidas",
+       "material": "cotton"
     }
 }
 
@@ -85,3 +85,32 @@ GET {{baseUrl}}/product/search/ao quan
 x-api-key: {{apiKey}}
 x-client-id: {{clientId}}
 Authorization: {{accessToken}}
+
+
+### PRODUCT
+GET {{baseUrl}}/product
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+
+### PRODUCT
+GET {{baseUrl}}/product/6660790c9c807b9cf51d3e41
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+
+
+### UPDATE PRODUCT
+PATCH {{baseUrl}}/product/66671343777ac0486dc4ad5d
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+{
+    "price":21000,
+    "type":"clothing",
+    "product_attributes": {
+      "size": "S"
+    }
+} 
