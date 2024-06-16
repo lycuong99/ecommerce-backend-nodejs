@@ -1,7 +1,7 @@
 @baseUrl = http://127.0.0.1:3055/api/v1
 @apiKey = e7a939158ea87c0b31160fd01d9057100aa6ceb86f72cf4fc20415093d939a2001384a19f23c65f62dbc99cd533f6a6b0ab3b195a6a5df14309beff2e03a3e48
 @clientId = 664895c35ff7900131e8fed3
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE4MDMwOTEwLCJleHAiOjE3MTgyMDM3MTB9.PtXLHVCtfyjENZv-njesj8U9c2Cb9uqrG3m1qyBUElc
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjQ4OTVjMzVmZjc5MDAxMzFlOGZlZDMiLCJlbWFpbCI6InNoYXNvMTFkYTFhMUBhYmMuY29tIiwiaWF0IjoxNzE4NTIzMTgzLCJleHAiOjE3MTg2OTU5ODN9.6JIzLewmVV0JBeYIscmX56MnQBCSK_JVbeiKaQFAbXc
 
 
 ### signUp
@@ -49,7 +49,7 @@ Authorization: {{accessToken}}
 Content-Type: application/json
 
 {
-    "name": "quần áo",
+    "name": "quần áo 3",
     "price": 1000,
     "description": "quần áo nhập khẩu",
     "quantity": 1000,
@@ -75,7 +75,7 @@ x-client-id: {{clientId}}
 Authorization: {{accessToken}}
 
 ###Publish product
-PUT {{baseUrl}}/product/publish/6660790c9c807b9cf51d3e41
+PUT {{baseUrl}}/product/publish/66685cd8f2f54b826ab4d56b
 x-api-key: {{apiKey}}
 x-client-id: {{clientId}}
 Authorization: {{accessToken}}
@@ -114,3 +114,60 @@ Content-Type: application/json
       "size": "S"
     }
 } 
+
+
+# DISCOUNT
+### create discount
+POST {{baseUrl}}/discount
+x-api-key: {{apiKey}}
+x-client-id: {{clientId}}
+Authorization: {{accessToken}}
+Content-Type: application/json
+
+{
+    "name": "giảm giá 10%",
+    "description": "giảm giá 10% cho đơn hàng từ 10000đ trở lên",
+    "code": "giamgia10",
+    "type": "percentage",
+    "value": 10,
+    "max_value": 10000,
+    "start_date": "2024-07-07 17:30:00",
+    "end_date": "2024-08-07 17:30:00",
+    "applies_to": "specific",
+    "product_ids": [
+        "66685cd8f2f54b826ab4d56b",
+        "6660790c9c807b9cf51d3e41"
+    ],
+    "max_usage":10,
+    "max_usage_per_user":1,
+    "users_used":[],
+    "min_order_value": 100000
+}
+
+
+### get product discount
+GET {{baseUrl}}/discount/products?code=giamgia10&shopId=664895c35ff7900131e8fed3&page=1&limit=10
+x-api-key: {{apiKey}}
+
+### get discount by shop
+GET {{baseUrl}}/discount?shopId=664895c35ff7900131e8fed3&page=1&limit=10
+x-api-key: {{apiKey}}
+
+
+### get amount discount
+POST {{baseUrl}}/discount/amount
+x-api-key: {{apiKey}}
+Content-Type: application/json
+
+{
+    "code": "giamgia10",
+    "shopId": "664895c35ff7900131e8fed3",
+    "userId":2,
+    "products":[
+        {
+            "id": "66685cd8f2f54b826ab4d56b",
+            "quantity": 4,
+            "price": 100000
+        }
+    ]
+}
