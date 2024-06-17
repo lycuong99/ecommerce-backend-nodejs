@@ -7,6 +7,7 @@
  */
 
 const { cart } = require('../models/cart.model')
+const { findProduct } = require('../models/repositories/product.repo')
 
 class CartService {
     static async createUserCart({ userId, product }) {
@@ -71,6 +72,61 @@ class CartService {
         }
         // co san pham -> update quantity
         return await this.updateCartProductQuantity({ userId, product });
+    }
+
+    /*
+        shop_order_ids = [
+            {
+                shopId,
+                products
+            }
+        ]
+    */
+    static async addProductToCartv2({shop_order_ids = [], userId, products}){
+        const foundCart = await cart.findOne({
+            cart_userId: userId,
+        });
+
+        if (!foundCart) {
+            return await this.createUserCart({ userId, product })
+        }
+
+        if(shop_order_ids && shop_order_ids.length > 0){
+            shop_order_ids.forEach(async (shop_order_id) => {
+                const { shopId, productId } = shop_order_id.products[0];
+                const checkProduct = await findProduct({product_id: productId});
+                if(!checkProduct){
+                    throw new NotFoundError('Product not found');
+                }
+                if(checkProduct.product_shop.toString()!== shopId){
+                    throw new NotFoundError('Product not belong to shop');
+                }
+            })
+        }
+    };
+
+    static async removeProductFromCart({ userId, productId }) {
+        const query = {
+            cart_userId: userId,
+            cart_state: 'active',
+        };
+
+        return await cart.updateOne(
+            query,
+            {
+                $pull: {
+                    cart_products: {
+                        productId,
+                    },
+                },
+            },
+        )
+    }
+
+    static async getCart({ userId }) {
+        return await cart.findOne({
+            cart_userId: userId,
+        }).lean()
     }
 }
 
