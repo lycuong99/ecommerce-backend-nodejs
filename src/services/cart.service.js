@@ -6,6 +6,7 @@
     - delete cart
  */
 
+const { NotFoundError, BadRequestError } = require('../core/error.response')
 const { cart } = require('../models/cart.model')
 const { findProduct } = require('../models/repositories/product.repo')
 
@@ -47,6 +48,12 @@ class CartService {
             }
         )
     }
+    /**
+     *
+     * @param {*} userId
+     * @param {*} product
+     * @returns
+     */
     static async addProductToCart({ userId, product = {} }) {
         const foundCart = await cart.findOne({
             cart_userId: userId,
@@ -65,68 +72,83 @@ class CartService {
         //?? san pham chua co
         const foundProduct = foundCart.cart_products.find(
             (item) => item.productId === product.productId
-        );
+        )
         if (!foundProduct) {
             foundCart.cart_products.push(product)
             return await foundCart.save()
         }
         // co san pham -> update quantity
-        return await this.updateCartProductQuantity({ userId, product });
+        return await this.updateCartProductQuantity({ userId, product })
     }
 
+    //update cart
     /*
         shop_order_ids = [
             {
                 shopId,
-                products
+                products: [
+                    {
+                        quantity,
+                        price,
+                        shopId,
+                        oldQuantity,
+                        productId
+                    }
+                ]
             }
         ]
     */
-    static async addProductToCartv2({shop_order_ids = [], userId, products}){
-        const foundCart = await cart.findOne({
-            cart_userId: userId,
+    /**
+     * @description when user update quantity of product in cart
+     * @param {*} param0
+     * @returns
+     */
+    static async addProductToCartv2({ userId, product }) {
+        const { productId, quantity, oldQuantity, shopId } = product //shop_order_ids[0]?.products[0]
+        //check product
+        const foundProduct = await findProduct({ product_id: productId })
+        if (!foundProduct) {
+            throw new NotFoundError('Product not found')
+        }
+
+        if (foundProduct.product_shop.toString() !== shopId) {
+            throw new BadRequestError('Product is not in this shop')
+        }
+
+        if(quantity === 0){
+            this.removeProductFromCart({ userId, productId });
+        }
+
+        return await this.updateCartProductQuantity({
+            userId,
+            product: {
+                quantity: quantity - oldQuantity,
+                productId,
+            },
         });
-
-        if (!foundCart) {
-            return await this.createUserCart({ userId, product })
-        }
-
-        if(shop_order_ids && shop_order_ids.length > 0){
-            shop_order_ids.forEach(async (shop_order_id) => {
-                const { shopId, productId } = shop_order_id.products[0];
-                const checkProduct = await findProduct({product_id: productId});
-                if(!checkProduct){
-                    throw new NotFoundError('Product not found');
-                }
-                if(checkProduct.product_shop.toString()!== shopId){
-                    throw new NotFoundError('Product not belong to shop');
-                }
-            })
-        }
-    };
+    }
 
     static async removeProductFromCart({ userId, productId }) {
         const query = {
             cart_userId: userId,
             cart_state: 'active',
-        };
+        }
 
-        return await cart.updateOne(
-            query,
-            {
-                $pull: {
-                    cart_products: {
-                        productId,
-                    },
+        return await cart.updateOne(query, {
+            $pull: {
+                cart_products: {
+                    productId,
                 },
             },
-        )
+        })
     }
 
     static async getCart({ userId }) {
-        return await cart.findOne({
-            cart_userId: userId,
-        }).lean()
+        return await cart
+            .findOne({
+                cart_userId: userId,
+            })
+            .lean()
     }
 }
 
