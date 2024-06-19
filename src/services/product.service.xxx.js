@@ -16,7 +16,11 @@ const {
     findProduct,
     updateProduct: updateProductById,
 } = require('../models/repositories/product.repo')
-const { removeNullAttributes, updateNestedObjectParse } = require('../utils')
+const {
+    removeNullAttributes,
+    updateNestedObjectParse,
+    toObjectIdMongo,
+} = require('../utils')
 
 class ProductFactory {
     static productRegistry = {}
@@ -32,7 +36,7 @@ class ProductFactory {
     }
 
     static async updateProduct(type, product_id, payload) {
-        console.log(`type::`, type);
+        console.log(`type::`, type)
         const productClass = this.productRegistry[type]
         if (!productClass) {
             throw new BadRequestError(`Invalid product type ${type}`)
@@ -78,7 +82,13 @@ class ProductFactory {
     }
 
     static async findProduct({ product_id }) {
-        return findProduct({ product_id, unSelect: ['__v'] })
+        return findProduct({
+            product_id:
+                typeof product_id === 'string'
+                    ? toObjectIdMongo(product_id)
+                    : product_id,
+            unSelect: ['__v'],
+        })
     }
 }
 class Product {
@@ -106,14 +116,13 @@ class Product {
         const newProduct = await product.create({
             ...this,
             _id,
-        });
-        if(newProduct) {
+        })
+        if (newProduct) {
             createInventory({
-                productId: newProduct._id ,
+                productId: newProduct._id,
                 stock: this.quantity,
-                shopId: this.product_shop, 
-            }
-            )
+                shopId: this.product_shop,
+            })
         }
         return newProduct
     }
@@ -158,7 +167,10 @@ class Clothing extends Product {
             })
         }
 
-        return await super.updateProduct(product_id, updateNestedObjectParse(objParams))
+        return await super.updateProduct(
+            product_id,
+            updateNestedObjectParse(objParams)
+        )
     }
 }
 

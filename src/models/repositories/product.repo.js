@@ -90,12 +90,26 @@ const findAllProducts = async ({ limit, sort, page, filter, select }) => {
         .lean();
 }
 
-const findProduct = async ({product_id, unSelect}) =>{
+const findProduct = async ({product_id, unSelect = []}) =>{
     return await product.findById(product_id).select(getUnSelectData(unSelect))
 }
 
 const updateProductById = async ({product_id, payload, isNew=true, model })=>{
    return await model.findByIdAndUpdate(product_id, payload, { new: isNew });
+}
+
+const checkProductsByServer = async (products=[]) => {
+   return Promise.all([
+    products.map( async (product) => {
+        const foundProduct = await findProduct({ product_id: product.productId });
+        if (foundProduct) {
+            return {
+                ...product,
+                price: foundProduct.price,
+            }
+        }
+    })
+   ])
 }
 
 module.exports = {
@@ -106,5 +120,6 @@ module.exports = {
     searchProductByUser,
     findAllProducts,
     findProduct,
-    updateProduct: updateProductById
+    updateProduct: updateProductById,
+    checkProductsByServer
 }

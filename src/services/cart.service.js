@@ -9,6 +9,7 @@
 const { NotFoundError, BadRequestError } = require('../core/error.response')
 const { cart } = require('../models/cart.model')
 const { findProduct } = require('../models/repositories/product.repo')
+const { toObjectIdMongo } = require('../utils')
 
 class CartService {
     static async createUserCart({ userId, product }) {
@@ -57,23 +58,36 @@ class CartService {
     static async addProductToCart({ userId, product = {} }) {
         const foundCart = await cart.findOne({
             cart_userId: userId,
-        })
+        });
+
+        const foundProduct = await findProduct({
+            product_id: toObjectIdMongo(product.productId),
+        });
+
+        if (!foundProduct) {
+            throw new NotFoundError('Product not found')
+        }
+
+        product.price = foundProduct.price;
+        product.name = foundProduct.name;
+
 
         if (!foundCart) {
             return await this.createUserCart({ userId, product })
         }
 
-        //chua co bat ky san pham
+        //chua co bat ky san pham nao trong cart
         if (!foundCart.cart_products.length) {
             foundCart.cart_products = [product]
             return await foundCart.save()
         }
 
-        //?? san pham chua co
-        const foundProduct = foundCart.cart_products.find(
+        //?? san pham chua co trong cart
+        const foundProductInCart = foundCart.cart_products.find(
             (item) => item.productId === product.productId
         )
-        if (!foundProduct) {
+
+        if (!foundProductInCart) {
             foundCart.cart_products.push(product)
             return await foundCart.save()
         }
@@ -103,10 +117,15 @@ class CartService {
      * @param {*} param0
      * @returns
      */
-    static async addProductToCartv2({ userId, product }) {
-        const { productId, quantity, oldQuantity, shopId } = product //shop_order_ids[0]?.products[0]
+    static async addProductToCartv2({ userId, shop_order_ids }) {
+        const { productId, quantity, oldQuantity, shopId } = shop_order_ids[0]?.products[0];
+
         //check product
-        const foundProduct = await findProduct({ product_id: productId })
+        // const foundProduct = await findProduct({ product_id: toObjectIdMongo(productId) });
+
+        const foundProduct = await findProduct({
+            product_id: toObjectIdMongo(productId),
+        });
         if (!foundProduct) {
             throw new NotFoundError('Product not found')
         }
