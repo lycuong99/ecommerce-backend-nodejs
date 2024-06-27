@@ -88,9 +88,18 @@ class CheckoutService {
                     itemCheckout.priceApplyDiscount = checkOutPrice - discount;  
                 }
             }
+
+            checkout_order.totalCheckOut += itemCheckout.priceApplyDiscount;
+            shop_order_ids_new.push(itemCheckout)
         });
 
-        checkout_order.totalCheckOut = checkout_order.totalPrice - checkout_order.totalDiscount;
+        return {
+            shop_order_ids,
+            shop_order_ids_new,
+            checkout_order
+        }
+
+       
     }
 }
 
