@@ -7,7 +7,6 @@ const COLLECTION_NAME = "shops";
 var shopSchema = new Schema({
     name:{
         type:String,
-        required:true,
         index:true,
     },
     email:{

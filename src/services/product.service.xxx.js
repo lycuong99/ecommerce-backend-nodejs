@@ -67,6 +67,13 @@ class ProductFactory {
 
         return await findAllPublishForShop({ query, limit, skip })
     }
+    static async findAllForShop({ product_shop, limit = 50, skip = 0 }) {
+        const query = {
+            product_shop,
+        }
+
+        return await this.findAllForShop({ query, limit, skip })
+    }
 
     static async searchProductByUser({ keySearch }) {
         return await searchProductByUser({ keySearch })

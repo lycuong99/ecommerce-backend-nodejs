@@ -7,6 +7,9 @@ const {
 } = require('../../models/product.model')
 const { getSelectData, getUnSelectData } = require('../../utils')
 
+const findAllForShop = async ({ query, limit = 50, skip = 0 }) => {
+    return await queryProduct({ query, limit, skip })
+}
 const findAllDraftsForShop = async ({ query, limit = 50, skip = 0 }) => {
     return await queryProduct({ query, limit, skip })
 }
@@ -113,6 +116,7 @@ const checkProductsByServer = async (products=[]) => {
 }
 
 module.exports = {
+    findAllForShop,
     findAllDraftsForShop,
     findAllPublishForShop,
     publishProductByShop,
